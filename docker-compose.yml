@@ -51,9 +51,9 @@ web:
   restart: always
 
 # cdn
-web:
+cdn:
   image: nginx
-  container_name: web
+  container_name: cdn
   environment:
     - VIRTUAL_HOST=cdn.purpletentacle.rocks
     - LETSENCRYPT_HOST=cdn.purpletentacle.rocks
@@ -64,8 +64,8 @@ web:
 
 # Registry
 registry:
-  restart: always
   image: registry:2
+  container_name: registry
   env_file: ../registry.env
   environment:
     - VIRTUAL_HOST=registry.purpletentacle.rocks
@@ -76,3 +76,4 @@ registry:
     - ../registry/public:/var/lib/registry
     # - /etc/nginx/certs:/certs
     - ../registry/auth:/auth
+  restart: always
