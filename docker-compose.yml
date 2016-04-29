@@ -42,8 +42,6 @@ letsencrypt:
 web:
   image: nginx
   container_name: web
-  ports:
-    - "8000:80"
   environment:
     - VIRTUAL_HOST=purpletentacle.rocks
     - LETSENCRYPT_HOST=purpletentacle.rocks
@@ -51,3 +49,30 @@ web:
   volumes:
     - ./public:/usr/share/nginx/html:ro
   restart: always
+
+# cdn
+web:
+  image: nginx
+  container_name: web
+  environment:
+    - VIRTUAL_HOST=cdn.purpletentacle.rocks
+    - LETSENCRYPT_HOST=cdn.purpletentacle.rocks
+    - LETSENCRYPT_EMAIL=info@purpletentacle.rocks
+  volumes:
+    - ../cdn:/usr/share/nginx/html:ro
+  restart: always
+
+# Registry
+registry:
+  restart: always
+  image: registry:2
+  env_file: ../registry.env
+  environment:
+    - VIRTUAL_HOST=registry.purpletentacle.rocks
+    - VIRTUAL_PORT=5000
+    - LETSENCRYPT_HOST=registry.purpletentacle.rocks
+    - LETSENCRYPT_EMAIL=info@purpletentacle.rocks
+  volumes:
+    - ../registry/public:/var/lib/registry
+    # - /etc/nginx/certs:/certs
+    - ../registry/auth:/auth
